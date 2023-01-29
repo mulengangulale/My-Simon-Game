@@ -1,7 +1,7 @@
 var gamePattern = [];
 var userClickedPattern = [];
 var level = 0;
-var started = true;
+
 
 
 // Storing the id of the button clicked in an array and playing sound of clicked button
@@ -17,20 +17,48 @@ $(".btn").on("click", function(){
 });
 
 // Calling nextSequence with keyboard and shows that game has started
-$(document).keydown(function () { 
-    if (started){
-        nextSequence();
-        started = false;
-    }
-});
+function startGame(){
+    var started = true;
+    $(document).keydown(function () { 
+        if (started){
+            nextSequence();
+            started = false;
+        }
+    });
+}
+startGame()
 
-// Game checker
+// This fuction checks if the user pattern and 
 function checkAnswer(currentLevel){
-    if (userClickedPattern == gamePattern){
-        console.log("Success")
+    if (userClickedPattern[currentLevel] === gamePattern[currentLevel]){
+        if (userClickedPattern.length === gamePattern.length) {
+            setTimeout(function () { 
+                nextSequence()
+                userClickedPattern = [];
+            }, 1000);
+        }
+        
     }else{
-        console.log("Wrong")
+        // Play wrong sound if the user misses the pattern
+        var sound = new Audio ("sounds/wrong.mp3");
+        sound.play()
+
+        // Change the H1 to Game over and add some css
+        $("body").addClass("game-over")
+        setTimeout(function () { 
+            $("body").removeClass("game-over");
+        }, 70);
+        $("h1").text("Game Over, Press A Key to Start");
+
+        // Call the start game to restart the game
+        startGame();
+        level = 0
+        gamePattern = [];
+        userClickedPattern = [];
+
+
     }
+    
 }
 
 // Plays sound of clicked button
